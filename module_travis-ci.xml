@@ -59,7 +59,7 @@
   
   <target name="compile.module.travis-ci.production" depends="register.custom.compilers" description="Compile module travis-ci; production classes">
     <mkdir dir="${travis-ci.output.dir}"/>
-    <javac2 destdir="${travis-ci.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.travis-ci}/javac">
+    <javac2 srcdir="${src.dir}" destdir="${travis-ci.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.travis-ci}/javac">
       <compilerarg line="${compiler.args.travis-ci}"/>
       <bootclasspath refid="travis-ci.module.bootclasspath"/>
       <classpath refid="travis-ci.module.production.classpath"/>
