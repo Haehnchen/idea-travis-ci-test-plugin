@@ -3,4 +3,3 @@ jdk:
 - oraclejdk7
 language: java
 script: "./travis.sh"
-sudo: false

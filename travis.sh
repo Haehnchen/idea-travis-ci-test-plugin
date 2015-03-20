@@ -1,5 +1,6 @@
 #!/bin/bash
 
+chmod +x build-idea.sh
 ./build-idea.sh
 
 # Run the tests
