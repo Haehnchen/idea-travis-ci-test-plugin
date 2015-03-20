@@ -111,4 +111,33 @@
       </manifest>
     </jar>
   </target>
+  
+   <path id="classpath.test">
+    <path refid="travis-ci.module.production.classpath"/>
+    <pathelement location="${travis-ci.output.dir}"/>
+    <pathelement location="${travis-ci.testoutput.dir}"/>
+    <pathelement location="${idea.home}/lib/guava-17.0.jar"/>
+  </path>
+  
+  <property name="test" value="tests"/>
+  
+  <target name="test.module.travis-ci" depends="compile.module.travis-ci" description="test module">
+  <junit failureproperty="failure_found" fork="yes" forkmode="once" haltonfailure="no" printsummary="on" showoutput="yes">
+     <classpath>
+        <path refid="classpath.test" />
+        <pathelement location="${test.build}" />
+        <pathelement location="${idea.home}/lib/junit-4.11.jar" />
+     </classpath>
+     <formatter type="brief" usefile="false" />
+     <batchtest>
+        <fileset dir="${test}">
+           <include name="**/*Test*.java" />
+           <exclude name="**/*TestCase.java" />
+        </fileset>
+     </batchtest>
+  </junit>
+  
+<antcall target="check_test"/>
+</target>
+  
 </project>

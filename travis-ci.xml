@@ -198,6 +198,7 @@
   <target name="clean" depends="clean.module.travis-ci" description="cleanup all"/>
   
   <target name="build.modules" depends="init, clean, plugin.build.jar.travis-ci" description="build all modules"/>
-  
+  <target name="test.modules" depends="test.module.travis-ci" description="test all modules"/>
+
   <target name="all" depends="build.modules" description="build all"/>
 </project>
