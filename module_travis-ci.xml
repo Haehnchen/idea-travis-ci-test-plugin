@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_travis-ci" default="compile.module.travis-ci">
+  <dirname property="module.travis-ci.basedir" file="${ant.file.module_travis-ci}"/>
+  
+  <property name="module.jdk.home.travis-ci" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.travis-ci" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.travis-ci" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.travis-ci" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="travis-ci.output.dir" value="${module.travis-ci.basedir}/out/production/travis-ci"/>
+  <property name="travis-ci.testoutput.dir" value="${module.travis-ci.basedir}/out/test/travis-ci"/>
+  
+  <path id="travis-ci.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="travis-ci.module.production.classpath">
+    <path refid="${module.jdk.classpath.travis-ci}"/>
+  </path>
+  
+  <path id="travis-ci.runtime.production.module.classpath">
+    <pathelement location="${travis-ci.output.dir}"/>
+  </path>
+  
+  <path id="travis-ci.module.classpath">
+    <path refid="${module.jdk.classpath.travis-ci}"/>
+    <pathelement location="${travis-ci.output.dir}"/>
+  </path>
+  
+  <path id="travis-ci.runtime.module.classpath">
+    <pathelement location="${travis-ci.testoutput.dir}"/>
+    <pathelement location="${travis-ci.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.travis-ci">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.travis-ci">
+    <patternset refid="excluded.from.module.travis-ci"/>
+  </patternset>
+  
+  <path id="travis-ci.module.sourcepath">
+    <dirset dir="${module.travis-ci.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="travis-ci.module.test.sourcepath">
+    <dirset dir="${module.travis-ci.basedir}">
+      <include name="tests"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.travis-ci" depends="compile.module.travis-ci.production,compile.module.travis-ci.tests" description="Compile module travis-ci"/>
+  
+  <target name="compile.module.travis-ci.production" depends="register.custom.compilers" description="Compile module travis-ci; production classes">
+    <mkdir dir="${travis-ci.output.dir}"/>
+    <javac2 destdir="${travis-ci.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.travis-ci}/javac">
+      <compilerarg line="${compiler.args.travis-ci}"/>
+      <bootclasspath refid="travis-ci.module.bootclasspath"/>
+      <classpath refid="travis-ci.module.production.classpath"/>
+      <src refid="travis-ci.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.travis-ci"/>
+    </javac2>
+    
+    <copy todir="${travis-ci.output.dir}">
+      <fileset dir="${module.travis-ci.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.travis-ci.tests" depends="register.custom.compilers,compile.module.travis-ci.production" description="compile module travis-ci; test classes" unless="skip.tests">
+    <mkdir dir="${travis-ci.testoutput.dir}"/>
+    <javac2 destdir="${travis-ci.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.travis-ci}/javac">
+      <compilerarg line="${compiler.args.travis-ci}"/>
+      <bootclasspath refid="travis-ci.module.bootclasspath"/>
+      <classpath refid="travis-ci.module.classpath"/>
+      <src refid="travis-ci.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.travis-ci"/>
+    </javac2>
+    
+    <copy todir="${travis-ci.testoutput.dir}">
+      <fileset dir="${module.travis-ci.basedir}/tests">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.travis-ci" description="cleanup module">
+    <delete dir="${travis-ci.output.dir}"/>
+    <delete dir="${travis-ci.testoutput.dir}"/>
+  </target>
+  
+  <property name="travis-ci.plugin.path.jar" value="${module.travis-ci.basedir}/travis-ci.jar"/>
+  
+  <!-- Build archive for plugin 'travis-ci' -->
+  <target name="plugin.build.jar.travis-ci" depends="compile.module.travis-ci" description="Build plugin archive for module &#39;travis-ci&#39;">
+    <jar destfile="${travis-ci.plugin.path.jar}" duplicate="preserve">
+      <zipfileset dir="${module.travis-ci.basedir}/out/production/travis-ci"/>
+      <zipfileset file="${module.travis-ci.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+  </target>
+</project>
